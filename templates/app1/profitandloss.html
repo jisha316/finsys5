@@ -1,0 +1,227 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .tr{
+            cursor:pointer;
+        }
+    </style>
+    <body>
+    <br><br>
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0">PROFIT AND LOSS</h2></center>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div class="card radius-15 p-3">
+        <form action="{% url 'profitandloss1' %}" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label style="text-align:left ">Report period</label><br>
+                        <select class="form-control" id="filterstyle" onchange="filterDate(this)" list="hosting-plan"
+                                name="reportperiod" type="text">
+                            <option><span class="bx bx-right-arrow-alt"></span>All Dates</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>This Month</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>This Financial Year</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4" id="frdate" style="display: none;">
+                        <label for="from">From</label>
+                        <input type="date" class="form-control" name="fper">
+                    </div>
+                    <div class="col-sm-4" id="todate" style="display: none;">
+                        <label for="from">To</label>
+                        <input type="date" class="form-control" name="tper">
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mt-3"></div>
+                    <div class="col-md-2 mt-3">
+                        <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-light">Run
+                            report
+                        </button>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <a href="{% url 'gocoa' %}">
+                            <button type="button" class="btn btn-outline-info rounded-pill w-100 text-light">
+                                Back
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <br><br>
+    <div class="card radius-15 p-5" style="margin-bottom: 50px;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="rectangle"
+                         style=" overflow: scroll; background-color: white;width: 100%;height:2000px;border: 3px white;padding: 50px;">
+                        <div class="rectangle"
+                             style="background-image: linear-gradient(dodgerblue, black); width: 100%; height: 200px; margin-top: 20px;">
+                            <div class="img-container"
+                                 style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                <img src="{{ cmp1.cimg.url }}"
+                                     style="width: 140px; height: 140px; border-radius: 50%;">
+                            </div>
+                            <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                        </div>
+
+                        <div class="table-responsive" style="margin-top: 100px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="center font-weight-bolder border-secondary" style="color: black;">ACCOUNT
+                                        </th>
+                                        <th class="center font-weight-bolder border-secondary" style="color: black;">TOTAL
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="color: black; padding-left: 30px;"><b>Operating Income</b></td>
+                                    </tr>
+                                    {% for i in inv %}
+                                        {% if i.payments != 0.0 %}
+                                            <tr class="tr" onclick="window.location='plreport/{{ i.accname }} ';">
+                                                <td class="center font-weight-light"
+                                                    style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
+                                                <td class="center font-weight-light"
+                                                    style="color: black;">{{ i.t1 }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <hr>
+                                    <tr>
+                                        <td style="color: black; padding-left: 30px;" class="border-secondary">
+                                            <b>Total for Operating Income</b>
+                                        </td>
+                                        <td style="color: black;" class="border-secondary"><b>{{ sum1 }}</b></td>
+                                    </tr>   
+                                </tbody>
+                            </table>
+                            <hr class="bg-secondary">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px;"><b>Cost Of Goods Sold</b></td>
+                                </tr>
+                                {% for i in pbl %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='plreport/{{ i.accname }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Cost of Goods Sold</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ sum2 }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
+                                        <b>Gross Profit</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ sum4 }}</td>
+                                </tr>
+
+
+                                <tr>
+                                    <td style="color: black; padding-left: 30px;"><b>Other Income</b></td>
+                                    <td style="color: black;"><b></b></td>
+                                </tr>
+                                {% for i in account5 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for i in account6 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%" class="border-secondary">
+                                        <b>Operating Expense</b>
+                                    </td>
+                                    <td class="center font-weight-light font-weight-bold border-secondary"></td>
+                                </tr>
+
+                                {% for i in exp %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='plreport/{{ i.accname }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Operating Expense</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ sum3 }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;"><b>Other Expenses</b>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="color: black; width: 85%" class="border-secondary"><b>PROFIT OR LOSS</b>
+                                    </td>
+                                    <td class="center border-secondary" style="color: black;"><b>{{ sumtot }}</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+
+{% endblock %}
